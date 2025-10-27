@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Donation Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { color: #2e8b57; }
+        .donation-list { list-style: none; padding: 0; }
+        .donation-item { padding: 10px; border-bottom: 1px solid #ddd; }
+        form { margin-top: 20px; }
+        input, button { padding: 10px; margin: 5px; }
+        button { background: #2e8b57; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Smart Donation Tracker</h1>
+        <p>Total Donated: $<span id="total">0</span></p>
+        <ul id="donation-list" class="donation-list"></ul>
+        
+        <form id="donation-form">
+            <input type="text" id="amount" placeholder="Amount ($)" required>
+            <input type="text" id="cause" placeholder="Cause/Charity" required>
+            <button type="submit">Add Donation</button>
+        </form>
+        
+        <p id="suggestion">Smart Suggestion: Consider donating to environmental causes for tax benefits.</p>
+    </div>
+
+    <script>
+        let donations = JSON.parse(localStorage.getItem('donations')) || [];
+        const list = document.getElementById('donation-list');
+        const totalEl = document.getElementById('total');
+        const form = document.getElementById('donation-form');
+
+        function updateUI() {
+            list.innerHTML = '';
+            let total = 0;
+            donations.forEach(d => {
+                total += parseFloat(d.amount);
+                list.innerHTML += `<li class="donation-item">${d.amount} to ${d.cause}</li>`;
+            });
+            totalEl.textContent = total.toFixed(2);
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const amount = document.getElementById('amount').value;
+            const cause = document.getElementById('cause').value;
+            donations.push({ amount, cause });
+            localStorage.setItem('donations', JSON.stringify(donations));
+            updateUI();
+            form.reset();
+        });
+
+        updateUI();
+    </script>
+</body>
+</html>
